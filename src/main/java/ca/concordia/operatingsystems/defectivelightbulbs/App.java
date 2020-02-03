@@ -9,18 +9,20 @@ public class App {
     /**
      * 
      */
-    private final static Lock BulbLock = new ReentrantLock(true);
-    private final static Lock NumLock = new ReentrantLock(true);
+    private final static Lock lightBulbLock = new ReentrantLock(true);
+    /**
+     * 
+     */
+    private final static Lock threadNumberLock = new ReentrantLock(true);
 
-    // define our global vars
-    static String listOfDefectiveBulbs = "The Defective bulbs are in the following positions: ";
-    static int numberOfThreads = 1;
+    public static String listOfDefectiveBulbs = "The Defective bulbs are in the following positions: ";
+    public static int numberOfThreads = 1;
 
     /**
-     * Determines if a lightbulb is on or off.
+     * Determines if a light bulb is on or off.
      * 
-     * @param inputArray array from which lightbulb values are being read
-     * @return false if the lighbulb is off, otherwise true
+     * @param inputArray array from which the light bulb values are read
+     * @return false if the light bulb is off, otherwise true
      */
     public static boolean isLightOn(int[] inputArray) {
         for (int i = 0; i <= inputArray.length - 1; i++) {
@@ -32,10 +34,11 @@ public class App {
     }
 
     /**
+     * Recursively finds the defective light bulbs.
      * 
-     * @param inputArray
-     * @param start
-     * @param end
+     * @param inputArray array from which the light bulb values are read
+     * @param start      starting postion of the array to be queried
+     * @param end        last position of the array to be queried
      */
     public static void findDefective(int[] inputArray, int start, int end) {
 
@@ -50,13 +53,13 @@ public class App {
         // if lenght = 1, we have found our defective bulb
         if (inputArray.length == 1) {
             // report found bulb, lock access to global
-            BulbLock.lock();
+            lightBulbLock.lock();
             try {
                 listOfDefectiveBulbs = listOfDefectiveBulbs + Integer.toString(start) + " ";
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                BulbLock.unlock();
+                lightBulbLock.unlock();
             }
             return;
         }
@@ -89,13 +92,13 @@ public class App {
 
         // increment thread counter, lock the global
         // note that we always create two threads at a time
-        NumLock.lock();
+        threadNumberLock.lock();
         try {
             numberOfThreads += 2;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            NumLock.unlock();
+            threadNumberLock.unlock();
         }
 
         // start both threads
@@ -113,17 +116,18 @@ public class App {
         return;
     }
 
+    /**
+     * Print the list of defective bulbs and number of threads used to find them.
+     */
     public static void printResults() {
         System.out.println(listOfDefectiveBulbs);
         System.out.println("The number of threads created for this problem was: " + Integer.toString(numberOfThreads));
     }
 
     public static void main(String[] args) throws Exception {
-
-        // step 1: read input text to array
-        // change file directory to local path
-        Scanner scanner = new Scanner(
-                new File("/Users/stephen/Documents/vs-code/java-projects/defective-lightbulbs/Input.txt"));
+        String filePath = "/Users/stephen/Documents/vs-code/java-projects/defective-lightbulbs/Input.txt";
+        File file = new File(filePath);
+        Scanner scanner = new Scanner(file);
 
         int length = scanner.nextInt();
         int[] input = new int[length];
@@ -140,7 +144,6 @@ public class App {
         // at 0
         findDefective(input, 1, input.length);
 
-        // print results using what is stored in the global vars
         printResults();
     }
 }
