@@ -7,11 +7,11 @@ import java.util.concurrent.locks.*;
 
 public class App {
     /**
-     * 
+     * TODO add the variable description
      */
     private final static Lock lightBulbLock = new ReentrantLock(true);
     /**
-     * 
+     * TODO add the variable description
      */
     private final static Lock threadNumberLock = new ReentrantLock(true);
 
@@ -19,13 +19,13 @@ public class App {
     public static int numberOfThreads = 1;
 
     /**
-     * Determines if a light bulb is on or off.
+     * Determine if a light bulb is on or off.
      * 
      * @param inputArray array from which the light bulb values are read
      * @return false if the light bulb is off, otherwise true
      */
     public static boolean isLightOn(int[] inputArray) {
-        for (int i = 0; i <= inputArray.length - 1; i++) {
+        for (int i = 0; i < inputArray.length; i++) {
             if (inputArray[i] == 0) {
                 return false;
             }
@@ -34,11 +34,11 @@ public class App {
     }
 
     /**
-     * Recursively finds the defective light bulbs.
+     * Recursively find the defective light bulbs.
      * 
      * @param inputArray array from which the light bulb values are read
-     * @param start      starting postion of the array to be queried
-     * @param end        last position of the array to be queried
+     * @param start      starting index of the array to be queried
+     * @param end        last index of the array to be queried
      */
     public static void findDefective(int[] inputArray, int start, int end) {
 
@@ -120,8 +120,9 @@ public class App {
      * Print the list of defective bulbs and number of threads used to find them.
      */
     public static void printResults() {
+        String message = "The number of threads created for this problem was: ";
         System.out.println(listOfDefectiveBulbs);
-        System.out.println("The number of threads created for this problem was: " + Integer.toString(numberOfThreads));
+        System.out.println(message + Integer.toString(numberOfThreads));
     }
 
     public static int[] buildInputArray() throws FileNotFoundException {
@@ -133,8 +134,13 @@ public class App {
         int[] inputArray = new int[length];
         int i = 0;
 
-        while (scanner.hasNextInt()) {
-            inputArray[i++] = scanner.nextInt();
+        try {
+            while (scanner.hasNextInt()) {
+                inputArray[i++] = scanner.nextInt();
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("The size of the array does not match the number of items");
+            e.printStackTrace();
         }
 
         scanner.close();
@@ -142,9 +148,11 @@ public class App {
     }
 
     public static void main(String[] args) {
+        int startIndex = 1;
+
         try {
             int[] input = buildInputArray();
-            findDefective(input, 1, input.length);
+            findDefective(input, startIndex, input.length);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
