@@ -17,4 +17,28 @@ public class AppTest {
     //     // Assert
     //     assertArrayEquals(expected, actual);
     // }
+
+    @Test
+    public final void whenAllLightsInListAreOnThenReturnTrue() {
+        // Arrange
+        int[] inputArray = {1, 1, 1, 1, 1, 1, 1, 1};
+
+        // Act
+        boolean status = App.isLightOn(inputArray);
+
+        // Assert
+        assertEquals(true, status);
+    }
+
+    @Test
+    public final void whenALightInListIsOffThenReturnFalse() {
+        // Arrange
+        int[] inputArray = {1, 1, 1, 0, 1, 1, 1, 1};
+
+        // Act
+        boolean status = App.isLightOn(inputArray);
+
+        // Assert
+        assertEquals(false, status);
+    }
 }

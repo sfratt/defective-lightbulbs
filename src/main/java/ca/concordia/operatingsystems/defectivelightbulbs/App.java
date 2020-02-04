@@ -124,26 +124,31 @@ public class App {
         System.out.println("The number of threads created for this problem was: " + Integer.toString(numberOfThreads));
     }
 
-    public static void main(String[] args) throws Exception {
-        String filePath = "/Users/stephen/Documents/vs-code/java-projects/defective-lightbulbs/Input.txt";
+    public static int[] buildInputArray() throws FileNotFoundException {
+        String filePath = "Input.txt";
         File file = new File(filePath);
         Scanner scanner = new Scanner(file);
 
         int length = scanner.nextInt();
-        int[] input = new int[length];
+        int[] inputArray = new int[length];
         int i = 0;
 
         while (scanner.hasNextInt()) {
-            input[i++] = scanner.nextInt();
+            inputArray[i++] = scanner.nextInt();
         }
 
         scanner.close();
+        return inputArray;
+    }
 
-        // call recursive function
-        // note: changing the second argument to 0 will give us bulb positions starting
-        // at 0
-        findDefective(input, 1, input.length);
-
+    public static void main(String[] args) {
+        try {
+            int[] input = buildInputArray();
+            findDefective(input, 1, input.length);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        
         printResults();
     }
 }
