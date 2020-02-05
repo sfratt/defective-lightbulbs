@@ -31,6 +31,14 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled true
+        html.destination file("${buildDir}/jacocoHtml")
+    }
+}
+
 application {
     // Define the main class for the application.
     mainClassName = 'ca.concordia.operatingsystems.defectivelightbulbs.App'
