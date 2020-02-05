@@ -64,16 +64,9 @@ public class App {
             return;
         }
 
-        // still multiple array entries, lets keep recurring
-        // find pivot
-
         int pivot = (inputArray.length + 1) / 2;
-
-        // now split array
         int[] leftArray = Arrays.copyOfRange(inputArray, 0, pivot);
         int[] rightArray = Arrays.copyOfRange(inputArray, pivot, inputArray.length);
-
-        // define threads
 
         Thread leftThread = new Thread(new Runnable() {
 
@@ -125,11 +118,30 @@ public class App {
         System.out.println(message + Integer.toString(numberOfThreads));
     }
 
-    public static int[] buildInputArray() throws FileNotFoundException {
-        String filePath = "Input.txt";
+    /**
+     * Build the input array from a text file length.
+     * 
+     * @return integer array populated with input text file values
+     * @throws FileNotFoundException if input file not found
+     */
+    public static int[] buildInputArray(String filePath) throws FileNotFoundException {
         File file = new File(filePath);
         Scanner scanner = new Scanner(file);
 
+        int[] inputArray = convertTextFileToIntegerArray(scanner);
+
+        scanner.close();
+        return inputArray;
+    }
+
+    /**
+     * Convert the text file to an array of values, using the first value as the
+     * array length.
+     * 
+     * @param scanner parses primitive types from text to integer
+     * @return array of {@code int} primitive types
+     */
+    public static int[] convertTextFileToIntegerArray(Scanner scanner) {
         int length = scanner.nextInt();
         int[] inputArray = new int[length];
         int i = 0;
@@ -139,19 +151,20 @@ public class App {
                 inputArray[i++] = scanner.nextInt();
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("The size of the array does not match the number of items");
+            System.out.println("The array length is less than the number of input items");
             e.printStackTrace();
         }
-
-        scanner.close();
         return inputArray;
     }
 
+    // TODO handle values that are not 0 or 1
+
     public static void main(String[] args) {
         int startIndex = 1;
+        String filePath = "Input.txt";
 
         try {
-            int[] input = buildInputArray();
+            int[] input = buildInputArray(filePath);
             findDefective(input, startIndex, input.length);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
