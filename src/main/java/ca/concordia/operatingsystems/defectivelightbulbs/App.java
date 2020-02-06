@@ -7,15 +7,15 @@ import java.util.concurrent.locks.*;
 
 public class App {
     /**
-     * TODO add the variable description
+     * Mutex used to lock the list of defective bulbs.
      */
     private final static Lock lightBulbLock = new ReentrantLock(true);
     /**
-     * TODO add the variable description
+     * Mutex used to lock the total number of threads counter.
      */
     private final static Lock threadNumberLock = new ReentrantLock(true);
 
-    public static String listOfDefectiveBulbs = "The Defective bulbs are in the following positions: ";
+    public static String listOfDefectiveBulbs = "The defective bulbs are in the following positions: ";
     public static int numberOfThreads = 1;
 
     /**
@@ -41,18 +41,13 @@ public class App {
      * @param end        last index of the array to be queried
      */
     public static void findDefective(int[] inputArray, int start, int end) {
-
-        // check to see if there is a defective bulb in array
         boolean lightOn = isLightOn(inputArray);
 
-        // if there are no defective bulbs in this sub array, return
         if (lightOn == true) {
             return;
         }
 
-        // if lenght = 1, we have found our defective bulb
         if (inputArray.length == 1) {
-            // report found bulb, lock access to global
             lightBulbLock.lock();
             try {
                 listOfDefectiveBulbs = listOfDefectiveBulbs + Integer.toString(start) + " ";
@@ -83,8 +78,6 @@ public class App {
             }
         });
 
-        // increment thread counter, lock the global
-        // note that we always create two threads at a time
         threadNumberLock.lock();
         try {
             numberOfThreads += 2;
@@ -94,11 +87,9 @@ public class App {
             threadNumberLock.unlock();
         }
 
-        // start both threads
         leftThread.start();
         rightThread.start();
 
-        // try to join back finished threads
         try {
             leftThread.join();
             rightThread.join();
@@ -158,7 +149,8 @@ public class App {
     }
 
     // TODO handle values that are not 0 or 1
-
+    // TODO handle index value larger than number of items in input text file
+    
     public static void main(String[] args) {
         int startIndex = 1;
         String filePath = "Input.txt";
