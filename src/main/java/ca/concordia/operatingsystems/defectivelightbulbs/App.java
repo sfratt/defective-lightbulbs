@@ -22,6 +22,7 @@ public class App {
     /**
      * Determine if a light bulb is on or off.
      * 
+     * @author Frank Sorschak
      * @param inputArray array from which the light bulb values are read
      * @return false if the light bulb is off, otherwise true
      */
@@ -37,6 +38,7 @@ public class App {
     /**
      * Recursively find the defective light bulbs.
      * 
+     * @author Frank Sorschak
      * @param inputArray array from which the light bulb values are read
      * @param start      starting index of the array to be queried
      * @param end        last index of the array to be queried
@@ -103,6 +105,8 @@ public class App {
 
     /**
      * Print the list of defective bulbs and number of threads used to find them.
+     * 
+     * @author Stephen Frattaroli
      */
     public static void printResults() {
         System.out.println(listOfDefectiveBulbs);
@@ -112,6 +116,7 @@ public class App {
     /**
      * Build the input array from a text file length.
      * 
+     * @author Stephen Frattaroli
      * @return integer array populated with input text file values
      * @throws Exception
      */
@@ -132,6 +137,7 @@ public class App {
      * Convert the text file to an array of values, using the first value as the
      * array length.
      * 
+     * @author Stephen Frattaroli
      * @param scanner parses primitive types from text to integer
      * @return array of {@code int} primitive types
      * @throws Exception
@@ -153,6 +159,8 @@ public class App {
 
     /**
      * Confirm array values are valid (0 or 1).
+     * 
+     * @author Stephen Frattaroli
      */
     public static boolean validateArrayValues(int[] inputArray) {
         for (int item : inputArray) {
