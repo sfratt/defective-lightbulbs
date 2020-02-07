@@ -7,25 +7,26 @@ import java.util.concurrent.locks.*;
 
 public class App {
     /**
-     * 
+     * Mutex used to lock the list of defective bulbs.
      */
     private final static Lock lightBulbLock = new ReentrantLock(true);
     /**
-     * 
+     * Mutex used to lock the total number of threads counter.
      */
     private final static Lock threadNumberLock = new ReentrantLock(true);
 
-    public static String listOfDefectiveBulbs = "The Defective bulbs are in the following positions: ";
+    public static final String message = "The number of threads created for this problem was: ";
+    public static String listOfDefectiveBulbs = "The defective bulbs are in the following positions: ";
     public static int numberOfThreads = 1;
 
     /**
-     * Determines if a light bulb is on or off.
+     * Determine if a light bulb is on or off.
      * 
      * @param inputArray array from which the light bulb values are read
      * @return false if the light bulb is off, otherwise true
      */
     public static boolean isLightOn(int[] inputArray) {
-        for (int i = 0; i <= inputArray.length - 1; i++) {
+        for (int i = 0; i < inputArray.length; i++) {
             if (inputArray[i] == 0) {
                 return false;
             }
@@ -34,25 +35,20 @@ public class App {
     }
 
     /**
-     * Recursively finds the defective light bulbs.
+     * Recursively find the defective light bulbs.
      * 
      * @param inputArray array from which the light bulb values are read
-     * @param start      starting postion of the array to be queried
-     * @param end        last position of the array to be queried
+     * @param start      starting index of the array to be queried
+     * @param end        last index of the array to be queried
      */
     public static void findDefective(int[] inputArray, int start, int end) {
-
-        // check to see if there is a defective bulb in array
         boolean lightOn = isLightOn(inputArray);
 
-        // if there are no defective bulbs in this sub array, return
         if (lightOn == true) {
             return;
         }
 
-        // if lenght = 1, we have found our defective bulb
         if (inputArray.length == 1) {
-            // report found bulb, lock access to global
             lightBulbLock.lock();
             try {
                 listOfDefectiveBulbs = listOfDefectiveBulbs + Integer.toString(start) + " ";
@@ -64,16 +60,9 @@ public class App {
             return;
         }
 
-        // still multiple array entries, lets keep recurring
-        // find pivot
-
         int pivot = (inputArray.length + 1) / 2;
-
-        // now split array
         int[] leftArray = Arrays.copyOfRange(inputArray, 0, pivot);
         int[] rightArray = Arrays.copyOfRange(inputArray, pivot, inputArray.length);
-
-        // define threads
 
         Thread leftThread = new Thread(new Runnable() {
 
@@ -90,8 +79,6 @@ public class App {
             }
         });
 
-        // increment thread counter, lock the global
-        // note that we always create two threads at a time
         threadNumberLock.lock();
         try {
             numberOfThreads += 2;
@@ -101,11 +88,9 @@ public class App {
             threadNumberLock.unlock();
         }
 
-        // start both threads
         leftThread.start();
         rightThread.start();
 
-        // try to join back finished threads
         try {
             leftThread.join();
             rightThread.join();
@@ -121,14 +106,37 @@ public class App {
      */
     public static void printResults() {
         System.out.println(listOfDefectiveBulbs);
-        System.out.println("The number of threads created for this problem was: " + Integer.toString(numberOfThreads));
+        System.out.println(message + Integer.toString(numberOfThreads));
     }
 
-    public static int[] buildInputArray() throws FileNotFoundException {
-        String filePath = "Input.txt";
+    /**
+     * Build the input array from a text file length.
+     * 
+     * @return integer array populated with input text file values
+     * @throws Exception
+     */
+    public static int[] buildInputArray(String filePath) throws Exception {
         File file = new File(filePath);
         Scanner scanner = new Scanner(file);
 
+        int[] inputArray = convertTextFileToIntegerArray(scanner);
+        scanner.close();
+
+        if (validateArrayValues(inputArray)) {
+            throw new Exception("The array contains values that are not 0 or 1");
+        }
+        return inputArray;
+    }
+
+    /**
+     * Convert the text file to an array of values, using the first value as the
+     * array length.
+     * 
+     * @param scanner parses primitive types from text to integer
+     * @return array of {@code int} primitive types
+     * @throws Exception
+     */
+    public static int[] convertTextFileToIntegerArray(Scanner scanner) throws Exception {
         int length = scanner.nextInt();
         int[] inputArray = new int[length];
         int i = 0;
@@ -137,18 +145,34 @@ public class App {
             inputArray[i++] = scanner.nextInt();
         }
 
-        scanner.close();
+        if (i < length) {
+            throw new Exception("The array length is larger than the total items in it!");
+        }
         return inputArray;
     }
 
+    /**
+     * Confirm array values are valid (0 or 1).
+     */
+    public static boolean validateArrayValues(int[] inputArray) {
+        for (int item : inputArray) {
+            if (item != 0 && item != 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
+        int startIndex = 1;
+        String filePath = "Input.txt";
+
         try {
-            int[] input = buildInputArray();
-            findDefective(input, 1, input.length);
-        } catch (FileNotFoundException e) {
+            int[] input = buildInputArray(filePath);
+            findDefective(input, startIndex, input.length);
+            printResults();
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        
-        printResults();
     }
 }

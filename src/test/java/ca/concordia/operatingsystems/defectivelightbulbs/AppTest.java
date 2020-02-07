@@ -4,24 +4,11 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class AppTest {
-    // @Test
-    // public void positiveTest() {
-    //     // Arrange
-    //     int start = 1;
-    //     int[] actual = { 1, 1, 0, 1, 1, 0, 1, 1 };
-    //     int[] expected = { 1, 2, 3, 4, 5, 6 };
-
-    //     // Act
-    //     App.findDefective(actual, start, actual.length);
-
-    //     // Assert
-    //     assertArrayEquals(expected, actual);
-    // }
 
     @Test
-    public final void whenAllLightsInListAreOnThenReturnTrue() {
+    public final void whenAllLightsInListAreOnThenTrue() {
         // Arrange
-        int[] inputArray = {1, 1, 1, 1, 1, 1, 1, 1};
+        int[] inputArray = { 1, 1, 1, 1, 1, 1, 1, 1 };
 
         // Act
         boolean status = App.isLightOn(inputArray);
@@ -31,9 +18,9 @@ public class AppTest {
     }
 
     @Test
-    public final void whenALightInListIsOffThenReturnFalse() {
+    public final void whenAnyLightInListIsOffThenFalse() {
         // Arrange
-        int[] inputArray = {1, 1, 1, 0, 1, 1, 1, 1};
+        int[] inputArray = { 1, 1, 1, 0, 1, 1, 1, 1 };
 
         // Act
         boolean status = App.isLightOn(inputArray);
