@@ -15,6 +15,7 @@ public class App {
      */
     private final static Lock threadNumberLock = new ReentrantLock(true);
 
+    public static final String message = "The number of threads created for this problem was: ";
     public static String listOfDefectiveBulbs = "The defective bulbs are in the following positions: ";
     public static int numberOfThreads = 1;
 
@@ -104,7 +105,6 @@ public class App {
      * Print the list of defective bulbs and number of threads used to find them.
      */
     public static void printResults() {
-        String message = "The number of threads created for this problem was: ";
         System.out.println(listOfDefectiveBulbs);
         System.out.println(message + Integer.toString(numberOfThreads));
     }
@@ -113,15 +113,18 @@ public class App {
      * Build the input array from a text file length.
      * 
      * @return integer array populated with input text file values
-     * @throws FileNotFoundException if input file not found
+     * @throws Exception
      */
-    public static int[] buildInputArray(String filePath) throws FileNotFoundException {
+    public static int[] buildInputArray(String filePath) throws Exception {
         File file = new File(filePath);
         Scanner scanner = new Scanner(file);
 
         int[] inputArray = convertTextFileToIntegerArray(scanner);
-
         scanner.close();
+
+        if (validateArrayValues(inputArray)) {
+            throw new Exception("The array contains values that are not 0 or 1");
+        }
         return inputArray;
     }
 
@@ -131,26 +134,35 @@ public class App {
      * 
      * @param scanner parses primitive types from text to integer
      * @return array of {@code int} primitive types
+     * @throws Exception
      */
-    public static int[] convertTextFileToIntegerArray(Scanner scanner) {
+    public static int[] convertTextFileToIntegerArray(Scanner scanner) throws Exception {
         int length = scanner.nextInt();
         int[] inputArray = new int[length];
         int i = 0;
 
-        try {
-            while (scanner.hasNextInt()) {
-                inputArray[i++] = scanner.nextInt();
-            }
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("The array length is less than the number of input items");
-            e.printStackTrace();
+        while (scanner.hasNextInt()) {
+            inputArray[i++] = scanner.nextInt();
+        }
+
+        if (i < length) {
+            throw new Exception("The array length is larger than the total items in it!");
         }
         return inputArray;
     }
 
-    // TODO handle values that are not 0 or 1
-    // TODO handle index value larger than number of items in input text file
-    
+    /**
+     * Confirm array values are valid (0 or 1).
+     */
+    public static boolean validateArrayValues(int[] inputArray) {
+        for (int item : inputArray) {
+            if (item != 0 && item != 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
         int startIndex = 1;
         String filePath = "Input.txt";
@@ -158,10 +170,9 @@ public class App {
         try {
             int[] input = buildInputArray(filePath);
             findDefective(input, startIndex, input.length);
-        } catch (FileNotFoundException e) {
+            printResults();
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-        printResults();
     }
 }
