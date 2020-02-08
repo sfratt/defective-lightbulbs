@@ -13,7 +13,7 @@ public class App {
     /**
      * Mutex used to lock the total number of threads counter.
      */
-    private final static Lock threadNumberLock = new ReentrantLock(true);
+    private final static Lock threadCounterLock = new ReentrantLock(true);
 
     public static final String message = "The number of threads created for this problem was: ";
     public static String listOfDefectiveBulbs = "The defective bulbs are in the following positions: ";
@@ -73,6 +73,7 @@ public class App {
                 findDefective(leftArray, start, start + pivot - 1);
             }
         });
+
         Thread rightThread = new Thread(new Runnable() {
 
             @Override
@@ -81,13 +82,13 @@ public class App {
             }
         });
 
-        threadNumberLock.lock();
+        threadCounterLock.lock();
         try {
             numberOfThreads += 2;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            threadNumberLock.unlock();
+            threadCounterLock.unlock();
         }
 
         leftThread.start();
@@ -101,16 +102,6 @@ public class App {
         }
 
         return;
-    }
-
-    /**
-     * Print the list of defective bulbs and number of threads used to find them.
-     * 
-     * @author Stephen Frattaroli
-     */
-    public static void printResults() {
-        System.out.println(listOfDefectiveBulbs);
-        System.out.println(message + Integer.toString(numberOfThreads));
     }
 
     /**
@@ -169,6 +160,16 @@ public class App {
             }
         }
         return false;
+    }
+
+    /**
+     * Print the list of defective bulbs and number of threads used to find them.
+     * 
+     * @author Stephen Frattaroli
+     */
+    public static void printResults() {
+        System.out.println(listOfDefectiveBulbs);
+        System.out.println(message + Integer.toString(numberOfThreads));
     }
 
     public static void main(String[] args) {
