@@ -174,7 +174,7 @@ public class App {
 
     public static void main(String[] args) {
         int startIndex = 1;
-        String filePath = "Input.txt";
+        String filePath = "assets/input.txt";
 
         try {
             int[] input = buildInputArray(filePath);
